@@ -1,6 +1,7 @@
 # gmailToSlack
 
-Send unread emails to slack channel.
+Send unread emails to slack channel with google app-scripts.
+
 This script run on [Google apps-script](https://developers.google.com/apps-script/) every 5 minute and send a wekhook to slack channel
 
 ## Installation
