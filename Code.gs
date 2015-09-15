@@ -25,7 +25,7 @@ function onInstall() {
  */
 function getGmailUnreaded(size) {
 
-  var batch = size || 10;
+  var batch = ~~size || 10; // cast to Number
 
   if (GmailApp.getInboxUnreadCount() === 0) {
     return; // prenvent gmail search
