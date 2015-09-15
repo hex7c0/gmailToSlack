@@ -19,6 +19,7 @@ function onInstall() {
 /**
  * grab unread emails. Send notification to slack and prevent to resend same email, if already done
  * 
+ * @customfunction
  * @param {Integer} [size] batch size
  * @return {Null}
  */
@@ -70,6 +71,7 @@ function getGmailUnreaded(size) {
 /**
  * send POST request to slack webhook. Throw error if not 200
  * 
+ * @customfunction
  * @param {Object} model data
  * @return {String}
  */
