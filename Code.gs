@@ -20,10 +20,11 @@ function onInstall() {
  * grab unread emails. Send notification to slack and prevent to resend same email, if already done
  * 
  * @customfunction
+ * @param {Object} e the event parameter for this trigger
  * @param {Integer} [size] batch size
  * @return {Null}
  */
-function getGmailUnreaded(size) {
+function getGmailUnreaded(e, size) {
 
   var batch = ~~size || 10; // cast to Number
 
