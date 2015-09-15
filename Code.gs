@@ -38,7 +38,10 @@ function getGmailUnreaded(size) {
     var id = thread.getId();
     var permalink = thread.getPermalink();
     var date = thread.getLastMessageDate().toString();
-    var subject = thread.getMessages()[0].getSubject(); // just first
+    var messages = thread.getMessages(); // just first
+    var lastMessage = messages[messages.length - 1];
+    var from = lastMessage.getFrom();
+    var subject = lastMessage.getSubject();
 
     var previousSend = PropertiesService.getScriptProperties().getProperty(id);
     if (previousSend && previousSend == date) { // already done, but unread
@@ -48,12 +51,13 @@ function getGmailUnreaded(size) {
     var data = {
       channel: channel,
       username: 'Gmail',
-      fallback: date + ' new unread email (' + subject + ') in <' + permalink
-        + '|inbox>',
-      color: "good", // Can either be one of 'good', 'warning', 'danger', or any hex color code
+      fallback: date + ' new unread email (' + subject + ') from "' + from
+        + '" in <' + permalink + '|inbox>',
+      color: 'good', // Can either be one of 'good', 'warning', 'danger', or any hex color code
       fields: [ {
         title: subject + ' - ' + date, // The title may not contain markup and will be escaped for you
-        value: 'new unread email in <' + permalink + '|inbox>',
+        value: 'new unread email from "' + from + '" in <' + permalink
+          + '|inbox>',
         short: false, // Optional flag indicating whether the `value` is short enough to be displayed side-by-side with other values
       } ]
     };
