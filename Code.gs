@@ -3,6 +3,7 @@
  */
 var uri = 'https://hooks.slack.com/services/WB_1/WB_2';
 var channel = '@NEW_CHANNEL';
+var slack = /@slack.com/;
 
 /**
  * runs when the add-on is installed calls onOpen() to ensure menu creation and any other initializion work is done immediately
@@ -46,6 +47,8 @@ function getGmailUnreaded(e, size) {
 
     var previousSend = PropertiesService.getScriptProperties().getProperty(id);
     if (previousSend && previousSend == date) { // already done, but unread
+      continue;
+    } else if (slack.test(from) === true) { // prevent slack loop
       continue;
     }
 
