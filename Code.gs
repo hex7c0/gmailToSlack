@@ -38,7 +38,7 @@ function getGmailUnreaded(e, size) {
 
     var id = thread.getId();
     var permalink = thread.getPermalink();
-    var date = thread.getLastMessageDate().toString();
+    var date = thread.getLastMessageDate().toLocaleString();
     var messages = thread.getMessages(); // just first
     var lastMessage = messages[messages.length - 1];
     var from = lastMessage.getFrom();
@@ -66,7 +66,7 @@ function getGmailUnreaded(e, size) {
     var lock = LockService.getScriptLock();
     lock.waitLock(10000); // 10 sec wait for lock
     sendHttpPost(data);
-    PropertiesService.getScriptProperties().setProperty(id, date.toString()); // stop another loop
+    PropertiesService.getScriptProperties().setProperty(id, date); // stop another loop
     lock.releaseLock(); // go ahead
   }
 
