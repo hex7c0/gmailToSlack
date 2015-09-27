@@ -22,18 +22,15 @@ function onInstall() {
  * 
  * @customfunction
  * @param {Object} e the event parameter for this trigger
- * @param {Integer} [size] batch size
  * @return {Null}
  */
-function getGmailUnreaded(e, size) {
+function getGmailUnreaded(e) {
 
-  var batch = ~~size || 10; // cast to Number
-
-  if (GmailApp.getInboxUnreadCount() === 0) {
-    return; // prenvent gmail search
+  if (GmailApp.getInboxUnreadCount() === 0) { // prenvent gmail search
+    return;
   }
 
-  var threads = GmailApp.search('in:inbox label:unread', 0, batch); // search in inbox, unread emails
+  var threads = GmailApp.search('in:inbox label:unread'); // search in inbox, unread emails
   for (var i = 0, ii = threads.length; i < ii; ++i) {
     var thread = threads[i];
 
@@ -45,7 +42,7 @@ function getGmailUnreaded(e, size) {
     var from = lastMessage.getFrom();
     var subject = lastMessage.getSubject();
 
-    var previousSend = PropertiesService.getScriptProperties().getProperty(id);
+    var previousSend = PropertiesService.getUserProperties().getProperty(id);
     if (previousSend && previousSend == date) { // already done, but unread
       continue;
     } else if (slack.test(from) === true) { // prevent slack loop
@@ -57,19 +54,19 @@ function getGmailUnreaded(e, size) {
       username: 'Gmail',
       fallback: date + ' new unread email (' + subject + ') from "' + from
         + '" in <' + permalink + '|inbox>',
-      color: 'good', // Can either be one of 'good', 'warning', 'danger', or any hex color code
+      color: 'good', // can either be one of 'good', 'warning', 'danger', or any hex color code
       fields: [ {
-        title: subject + ' - ' + date, // The title may not contain markup and will be escaped for you
+        title: date + ' - ' + subject, // the title may not contain markup and will be escaped for you
         value: 'new unread email from "' + from + '" in <' + permalink
           + '|inbox>',
-        short: false, // Optional flag indicating whether the `value` is short enough to be displayed side-by-side with other values
+        short: false, // optional flag indicating whether the `value` is short enough to be displayed side-by-side with other values
       } ]
     };
 
     var lock = LockService.getScriptLock();
     lock.waitLock(10000); // 10 sec wait for lock
     sendHttpPost(data);
-    PropertiesService.getScriptProperties().setProperty(id, date); // stop another loop
+    PropertiesService.getUserProperties().setProperty(id, date); // stop another loop
     lock.releaseLock(); // go ahead
   }
 
