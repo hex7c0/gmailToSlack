@@ -33,6 +33,7 @@ function getGmailUnreaded(e) {
 
   var threads = GmailApp.search('in:inbox label:unread'); // search in inbox, unread emails
   for (var i = 0, ii = threads.length; i < ii; ++i) {
+    Utilities.sleep(500); // reduce thread.getMessages call
     var thread = threads[i];
 
     var id = thread.getId();
