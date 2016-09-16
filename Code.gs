@@ -37,17 +37,19 @@ function getGmailUnreaded(e) {
     var thread = threads[i];
 
     var id = thread.getId();
-    var permalink = thread.getPermalink();
     var date = thread.getLastMessageDate().toLocaleString();
+    var previousSend = PropertiesService.getUserProperties().getProperty(id);
+    if (previousSend && previousSend == date) { // already done, but still unread
+      continue;
+    }
+
+    var permalink = thread.getPermalink();
     var messages = thread.getMessages(); // just first
     var lastMessage = messages[messages.length - 1];
     var from = lastMessage.getFrom();
     var subject = lastMessage.getSubject();
 
-    var previousSend = PropertiesService.getUserProperties().getProperty(id);
-    if (previousSend && previousSend == date) { // already done, but unread
-      continue;
-    } else if (isSlack.test(from) === true) { // prevent slack loop
+     if (isSlack.test(from) === true) { // prevent slack loop
       continue;
     }
 
@@ -66,7 +68,7 @@ function getGmailUnreaded(e) {
     };
 
     var lock = LockService.getScriptLock();
-    lock.waitLock(10000); // 10 sec wait for lock
+    lock.waitLock(10000); // wait for lock. max 10 sec
     sendHttpPost(data);
     PropertiesService.getUserProperties().setProperty(id, date); // stop another loop
     lock.releaseLock(); // go ahead
